@@ -4,6 +4,8 @@ DeepSeek Harness（DSH）的**海洋双主题**：把模型回复的 Markdown �
 
 > Markdown 配色沿用琥珀 / 薄荷 / 青蓝三色结构（一个色相一个语义）；界面部分吸收官方首页复刻项目 [JohnnyTing/dsh-official-homepage-theme](https://github.com/JohnnyTing/dsh-official-homepage-theme)（MIT）的渐变配方与分层手法。
 
+<p align="center"><img src="icon.svg" width="104" alt="dsh-ocean-theme 图标"></p>
+
 ## 四块能力
 
 1. **Markdown 语义配色**（深浅双档）：标题 / 加粗 / 斜体 / 行内代码 / 列表标记 / 链接 / 引用块 / 分割线 / 表格。色相体系：琥珀 35°（标题/加粗，画布 214° 的精确补色）+ 青蓝 187°（链接，「属于水系」）+ 薄荷 133°（行内代码）——每个色相一个语义。
@@ -44,10 +46,29 @@ DeepSeek Harness（DSH）的**海洋双主题**：把模型回复的 Markdown �
 5. **token 层**：浅色挂 `html body`、深色挂 `body[data-ds-dark-theme]`，均 `!important`。内部变量前缀 `--sea-*`。
 6. **零依赖**：两个 `<style>` 标签，无 require、无 React、无槽位、无网络、无 DOM 注入、无存储。
 
+## 下载
+
+到 [Releases 页面](https://github.com/jackxiao17/dsh-ocean-theme/releases/latest) 下载最新版压缩包并解压，得到 `dsh-ocean-theme/` 文件夹；也可以 `git clone` 本仓库——主题就是两份 JS 里内嵌的 CSS 加一张 SVG，没有构建步骤、没有依赖。
+
 ## 安装
 
-- profile 以 junction 链接本目录（`~/.dsh/profiles/desktop/node_modules/dsh-ocean-theme`），已在 `dsh.profile.bundles` 注册；
-- 改完样式 `Ctrl+R` 即生效；主题在 **设置 → 插件** 里可随时启用/禁用。
+1. 把 `dsh-ocean-theme/` 整个文件夹拷到 `~/.dsh/profiles/desktop/local/` 下（Windows 即 `C:\Users\你\.dsh\profiles\desktop\local\dsh-ocean-theme\`）
+2. 编辑 `~/.dsh/profiles/desktop/package.json`：
+   - `dependencies` 里加一行：`"dsh-ocean-theme": "file:./local/dsh-ocean-theme"`
+   - `dsh.profile.bundles` 数组里加一项：`"dsh-ocean-theme"`
+3. 在该目录跑一次 DSH 自带的 pnpm：
+   ```
+   node "%DSH_HOME%\dsh-runtimes\dsh-primary-runtime\dependencies\pnpm\bin\pnpm.cjs" install -C %DSH_HOME%\profiles\desktop
+   ```
+4. 重启 DSH 生效；主题在 **设置 → 插件** 里可随时启用/禁用
+
+开发时不必每次拷文件：把 `dependencies` 那行换成 `"dsh-ocean-theme": "link:<源码目录绝对路径>"`，源码里改完样式在页面 `Ctrl+R` 即生效。
+
+## 兼容性
+
+- **已在 DeepSeek Harness `0.2.1-rc.5`（桌面版）上复核通过**：两档界面的 tooltip / toast 对比度、编辑写入行的 ± 行数配色，均按真实产品规则渲染核对过
+- 实现全是 CSS 变量覆盖 + 类名前缀匹配，不调用宿主 API、不注入 DOM、不读写存储，所以升级 DSH 不会报错。失效方式是**颜色回退**：产品若改了 token 名或类名后缀，对应那片区域回到默认配色，功能与数据不受影响
+- 更早的版本没有逐一验证，因此不做承诺
 
 ## 版本
 
