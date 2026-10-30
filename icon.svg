@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="DSH Ocean theme — 浅海 / 深海">
+  <defs>
+    <!-- 深海面：与深色画布同一支渐变（#16314f → #071626） -->
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16314f"/>
+      <stop offset="1" stop-color="#071626"/>
+    </linearGradient>
+    <!-- 浅海天光：上端留白、贴海平线处压深一档，保证在白底面板上也能看出上边界 -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f4f9ff"/>
+      <stop offset="1" stop-color="#cfdff8"/>
+    </linearGradient>
+    <!-- 太阳只留海平线以上的一半 -->
+    <mask id="sunHalf" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <rect x="0" y="0" width="64" height="26" fill="#fff"/>
+    </mask>
+    <clipPath id="tile">
+      <rect width="64" height="64" rx="14"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#tile)">
+    <rect width="64" height="64" fill="url(#sea)"/>
+    <rect width="64" height="26" fill="url(#sky)"/>
+    <circle cx="32" cy="26" r="9.5" fill="#f5a742" mask="url(#sunHalf)"/>
+    <rect x="0" y="24.8" width="64" height="2.2" fill="#ffffff" opacity="0.92"/>
+    <path d="M0 43c9 6 15-4 26-3s14 9 23 7 11-6 15-7" fill="none" stroke="#8fc0f0" stroke-width="2.8" stroke-linecap="round" opacity="0.95"/>
+    <path d="M0 53c9 6 15-4 26-3s14 9 23 7 11-6 15-7" fill="none" stroke="#56b6c2" stroke-width="2.4" stroke-linecap="round" opacity="0.8"/>
+    <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="13.25" fill="none" stroke="#081426" stroke-opacity="0.10" stroke-width="1.2"/>
+  </g>
+</svg>

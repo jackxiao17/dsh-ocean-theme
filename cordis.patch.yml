@@ -1,0 +1,5 @@
+# dsh-ocean-theme bundle 层：插入海洋主题插件行。
+- insert:
+    - id: ocean-theme
+      name: 'dsh-ocean-theme'
+      config: {}
