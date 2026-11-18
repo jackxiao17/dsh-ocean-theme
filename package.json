@@ -1,6 +1,6 @@
 {
   "name": "dsh-ocean-theme",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "DSH 海洋主题：Markdown 琥珀单主色 + 正文等宽 + 全站琥珀强调色；界面两档跟随外观偏好——浅海（亮蓝画布 + 白玻璃面板）与深海（官方首页深蓝画布 + 海军蓝分层面板），用户气泡高对比月光蓝/淡azure蓝。纯 CSS，无设置。",
   "license": "MIT",
   "icon": "./icon.svg",
