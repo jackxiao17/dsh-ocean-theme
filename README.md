@@ -39,8 +39,8 @@ DeepSeek Harness（DSH）的**海洋双主题**：把模型回复的 Markdown �
 
 ## 实现要点
 
-1. **作用域抗升级**：Markdown 容器类是 CSS Modules 哈希，全部规则挂 `[class*="_markdown_"]`；`:not([data-markdown-variant])` 排除紧凑变体。
-2. **正文等宽**：产品在 body 声明 `--dsw-font-family`，token 值在使用处解析 var()——在 markdown 根上重定义即可。
+1. **作用域抗升级**：Markdown 容器类是 CSS Modules 哈希，旧版形如 `_markdown_<hash>`、新版形如 `-<hash>_markdown`，全部规则挂 `div[class*="_markdown"]` 同时兼容两者；`:not([data-markdown-variant])` 排除紧凑变体。
+2. **正文等宽**：新版 Markdown 使用 body 上预计算的 `--dsw-font-markdown-*` token，子元素重定义 `--dsw-font-family` 已无效；主题直接覆盖 Markdown 根节点、标题和表格单元格的 `font-family`，保留产品原有字号与行高。
 3. **强调色**：`html body` / `html body[data-ds-dark-theme]` 特异性 + `!important`，与插入顺序无关。
 4. **画布**：`body::before`（fixed, z -1）不透明渐变 + body 背景透明；`html` 用 `:has(body[data-ds-dark-theme])` 兜底。
 5. **token 层**：浅色挂 `html body`、深色挂 `body[data-ds-dark-theme]`，均 `!important`。内部变量前缀 `--sea-*`。
@@ -66,12 +66,13 @@ DeepSeek Harness（DSH）的**海洋双主题**：把模型回复的 Markdown �
 
 ## 兼容性
 
-- **当前复核到 DeepSeek Harness `0.2.2-rc.5`（桌面版）**：逐 token、逐结构选择器对照新构建源码与产物重探过——官方主题包 `@deepseek-ai/dsh-client-ui-theme` 的 token 定义、`window.__ModuleLoader__.load()` 客户端 manifest 契约均无变化，主题照常加载。唯一失效点是右侧面板：`0.2.2` 把它从 `detailsCol` 列重构为 `rightbarCol` + dockkit，旧选择器整体落空（右侧面板回退产品默认中性色，无报错），`0.1.4` 已改锚稳定的 `data-rightbar-col` / `data-dockkit-*` 自定义属性
-- 实现全是 CSS 变量覆盖 + 类名/属性前缀匹配，不调用宿主 API、不注入 DOM、不读写存储，所以升级 DSH 不会报错。失效方式是**颜色回退**：产品若改了 token 名或类名后缀，对应那片区域回到默认配色，功能与数据不受影响
-- 历史记录：`0.2.1-rc.5` 时期的 tooltip / toast 对比度、编辑写入行 ± 行数配色均已按真实产品规则核对；0.1.0–0.1.3 未对更早版本逐一验证，不做兼容承诺
+- **当前复核到 DeepSeek Harness `0.2.3-alpha.2`（桌面版）**：官方主题包 `@deepseek-ai/dsh-client-ui-theme` 的 token 定义、`window.__ModuleLoader__.load()` 客户端 manifest 契约均无变化。`0.1.5` 修复了新版 CSS Modules 类名由 `_markdown_<hash>` 变为 `-<hash>_markdown` 导致的 Markdown 样式失配，并同步适配表格、文件提及、代码语言标签和分隔条锚点；正文等宽改为直接覆盖 `font-family`，兼容新版 body 预计算字体 token
+- 实现为 CSS 变量覆盖 + 类名/属性匹配，不调用宿主业务 API、不读写存储。产品若再改 token 名或结构锚点，对应区域可能回退默认配色，但功能与数据不受影响
+- 历史记录：`0.2.2-rc.5` 时期右侧面板由 `detailsCol` 重构为 `rightbarCol` + dockkit，`0.1.4` 已改锚稳定的 `data-rightbar-col` / `data-dockkit-*`；`0.2.1-rc.5` 时期的 tooltip / toast 对比度、编辑写入行 ± 行数配色均已按真实产品规则核对
 
 ## 版本
 
+- `0.1.5` — 适配 DeepSeek Harness `0.2.3-alpha.2`：①Markdown 根选择器改为 `div[class*="_markdown"]`，同时兼容旧 `_markdown_<hash>` 与新 `-<hash>_markdown`；②表格、文件提及、代码语言标签选择器去掉末尾下划线假设，分隔条改用 `data-dockkit-*` 稳定锚点；③正文等宽改为直接覆盖 Markdown 根节点、标题和表格单元格的 `font-family`，适配新版 body 预计算字体 token；④声明 `engines.dsh: ^0.2.3-alpha.2`。配色、布局和设置项不变。
 - `0.1.4` — 对齐 DeepSeek Harness `0.2.2-rc.5`：①右侧面板重写为 `data-rightbar-col` + `data-dockkit-*` 锚点（旧 `[class*='detailsCol']` 在新构建中整列消失，右侧面板会掉回产品默认中性灰）；②输入框两个强调钮补色——发送圆钮 `--dsw-alias-button-info-fill/-hover` 与附件「+」钮 `--dsw-specific-selector`，浅色档蜜琥珀 `#8a4b00 → #743f00`（CTA 身份与 Markdown 强调色同源），深色档亮金 `#f5a742 → #ffbf70`，附件钮浅 `#edf3fb` / 深 `#19355a`，悬停由既有 `--dsw-alias-interactive-bg-hover-solid` 提亮，按钮字色保持产品白字不变。
 - `0.1.3` — 换图标：旧图标是黑底 + 紫/绿/琥珀色条，那是插件 Markdown 主题时期的配色标记，跟海洋主题没有关系。新图标「海平线」——上半是浅海天光 `#f4f9ff → #cfdff8`、下半是深海 `#16314f → #071626`，海平线一道白线，琥珀半日 `#f5a742` 正落在线上（只留露出水面的一半），下面两道浪（浅蓝 `#8fc0f0`、青绿 `#56b6c2`）。把「浅海 / 深海」两档直接画成两片海，40px 列表态、28px、20px 都还认得出。64×64 纯矢量、圆角 14、无滤镜无外链，1.7 KB。
 - `0.1.2` — 工具行（编辑 / 写入）的 `+N` / `−N` 常显红绿：产品只在 `:hover` 或 `[aria-expanded]` 时给 `.diffAdded` / `.diffRemoved` 上色，默认跟行文字一起发灰，移开鼠标就丢语义。改法是把两支语义色提到 `--sea-diff-add` / `--sea-diff-del` 上常显（`!important` 锁死，免得悬浮瞬间跳色）；浅色档没直接用产品绿 `#22c55e`（在淡蓝面板上仅 2.0:1，白底也才 2.3:1，11px 小字读不动），换成与正文行内代码同一支薄荷绿 `#27793d`（4.8:1）+ 深红 `#b3261e`（5.8:1），深色档 `#7fd88f` / `#f25a5a`。
